@@ -208,10 +208,10 @@ def analysis_summary(genes, DNA_sequence2, searching_method, min_length,):
     "ANALYSIS SUMMARY\n"
     "===============================\n"
     "\n"
-    f"Genes meeting minimum length: {min_length}, base pairs \n"
+    f"Minimum length: {min_length} base pairs \n"
     f"Search method:  {search} \n"
     f"Number of genes found: {len(genes)} \n"
-    f"Sequence length:  {len(DNA_sequence2)}, base pairs \n"
+    f"Sequence length:  {len(DNA_sequence2)} base pairs \n"
     "\n"
     "===============================\n"
     )
@@ -231,7 +231,7 @@ def analysis_summary2(genes, RNA_sequence2, searching_method, min_length,):
     "ANALYSIS SUMMARY\n"
     "===============================\n"
     "\n"
-    f"Genes meeting minimum length: {min_length}, base pairs"
+    f"Minimum length: {min_length}, base pairs"
     f"Search method:  {search} /n"
     f"Number of genes found: {len(genes)} \n"
     f"Sequence length: {len(RNA_sequence2)} base pairs"
@@ -239,7 +239,6 @@ def analysis_summary2(genes, RNA_sequence2, searching_method, min_length,):
     "==============================="
     )
     return analysis
-    
 
 
 # function for the start of the code
@@ -273,14 +272,14 @@ def hello_sequence():
             
             
             filename = input()
+            if not os.path.exists(filename): # checks to see if the file name exists or it will return an error message
+                print ("ERROR: This file does not exist, please enter the file name exactly as it is saved in the folder")
+                exit()
             min_length = minimum_length()
 
             searching_method = get_search_method()
             
-            
 
-            if not os.path.exists(filename): # checks to see if the file name exists or it will return an error message
-                return "ERROR: This file does not exist, please enter the file name exactly as it is saved in the folder"
             
             DNA_sequence_rough = read_fasta_file(filename)
             print ("----------------------------------------------------------------------------")
@@ -360,10 +359,12 @@ def hello_sequence():
             print ("Please enter the fasta file name: ")
             
             filename = input()
+            if not os.path.exists(filename): # checks to see if the file name exists or it will return an error message
+                print ("ERROR: This file does not exist, please enter the file name exactly as it is saved in the folder")
+                exit()
             min_length = minimum_length()
             searching_method = get_search_method()
-            if not os.path.exists(filename):
-                return "ERROR: This file does not exist, please enter the file name exactly as it is saved in the folder"
+
             
             RNA_sequence_rough = read_fasta_file(filename) 
             print ("----------------------------------------------------------------------------")
@@ -696,6 +697,7 @@ def convert_sequence_to_amino_acids_R(gene_dictionary, min_length, search_method
 
 
 def save_to_file(results):
+    invalid_characters = '<>:"/\\|?*'
     print ("Would you like to save the result as a file? (Y/N)")
     file_decision1 = input()
     file_decision = file_decision1.upper()
@@ -706,6 +708,12 @@ def save_to_file(results):
     if file_decision == "Y" or file_decision == "yes" or file_decision == "Yes" or file_decision == "YES":
         print ("Please enter the filename: ")
         filename = input()
+
+        if any(character in filename for character in invalid_characters):
+            print("ERROR: The filename contains invalid characters")
+            print('Please do not use: < > : " / \\ | ? *')
+            exit()
+                
         with open(filename + ".txt", "w") as file: 
             file.write(results)
         print ("File saved successfully")
